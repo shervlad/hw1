@@ -4,37 +4,8 @@ import numpy as np
 from torch.optim import Adam
 from torch.distributions.normal import Normal
 import csv
-class GaussianMLP(torch.nn.Module):
-    def __init__(self, dimensions, activation = nn.ReLU, output_activation=nn.Identity):
-        super().__init__()
-
-        layers = []
-
-        for j in range(len(dimensions)-1):
-            act = activation if j < len(dimensions)-2 else output_activation
-            layers += [nn.Linear(dimensions[j], dimensions[j+1]), act()]
-
-        self.log_std = nn.Parameter(torch.as_tensor(-0.5*np.ones(dimensions[-1],dtype=np.float32)))
-        self.perceptron =  nn.Sequential(*layers)
-
-    def forward(self, state):
-        pi = self.perceptron(state)
-        st_dev = torch.exp(self.log_std)
-        return Normal(pi,st_dev)
-
-class CategoricalMLP(torch.nn.Module):
-    def __init__(self,dimensions,activation = nn.ReLU, output_activation=nn.Identity):
-        super().__init__()
-        layers = []
-
-        for j in range(len(dimensions)-1):
-            act = activation if j < len(dimensions)-2 else output_activation
-            layers += [nn.Linear(dimensions[j], dimensions[j+1]), act()]
-
-        self.perceptron =  nn.Sequential(*layers)
-
-    def forward(self, state):
-        return torch.squeeze(self.perceptron(state),-1)
+import time
+from utils import *
 
 def discount(arr, gamma, last_val = 0):
     T = len(arr)
@@ -57,14 +28,14 @@ def compute_advatages(states,rewards,vals,gamma,last_val):
     a = discount(deltas,gamma,last_val)
     return a
 
+
 def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, epsilon = 0.2, 
-        pi_step=0.0001, v_step = 0.001, sgd_iterations=20, plot_fn = None, path=None):
+        pi_step=0.0001, v_step = 0.001, sgd_iterations=20, hidden_sizes=(64,64), plot_fn = None, path=None):
+    
     env = env_fn()
 
     state_dims = env.observation_space.shape
     act_dims = env.action_space.shape
-
-    hidden_sizes = (64,64)
 
     pi_network = GaussianMLP(state_dims + hidden_sizes + act_dims)
     v_network = CategoricalMLP(state_dims + hidden_sizes + (1,))
@@ -139,27 +110,12 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
         mean_loss_v  = np.array(v_losses).mean()
 
         if(e%10 == 0):
-            plot_fn(env = env, epoch = e, pi = pi_network, v_net=v_network)
-            save_metrics(e,rewards,vals,mean_loss_pi,mean_loss_v,path)
+            save_metrics(e,rewards,vals,mean_loss_pi,mean_loss_v,path=path)
+            plot_metrics(path)
 
         if(e%50 == 0 and path is not None):
             print("saving...")
-            save(pi_network, v_network, path)
+            save_pi_and_val(pi_network, v_network, path)
+        if(e%100 == 0):
+            plot_fn(env = env, epoch = e, pi = pi_network, v_net=v_network, path=path)
         state = env.reset()
-
-def save(pi_network, v_network,path):
-    torch.save(pi_network.state_dict(),path+"policy.pt")
-    torch.save(v_network.state_dict(),path+"value_fn.pt")
-
-def save_metrics(epoch,rewards,vals,mean_loss_pi,mean_loss_v,path):
-    cum_r = np.sum(rewards.detach().numpy())
-    min_r = rewards.min().item()
-    max_r = rewards.max().item()
-    mean_r = rewards.mean().item()
-    min_v = vals.min().item()
-    max_v = vals.max().item()
-    mean_v = vals.mean().item()
-    with open(path+'metrics.csv', 'a+', newline='') as csvfile:
-        writer = csv.writer(csvfile, delimiter=' ',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
-        writer.writerow([epoch,cum_r,min_r,mean_r,max_r,min_v,mean_v,max_v,mean_loss_pi,mean_loss_v])
