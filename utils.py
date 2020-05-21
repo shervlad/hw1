@@ -190,6 +190,7 @@ def load_hyperParameters(filename):
         with open(filename, newline='') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             for i,row in enumerate(reader):
+                print(row)
                 key = row[0]
                 val = row[1]
                 if types[i] == 'int':
@@ -255,7 +256,7 @@ def plot_metrics(path,show=False):
         reader = csv.reader(csvfile, delimiter=' ', quotechar='|')
         for row in reader:
             epoch,cum_r,min_r,mean_r,max_r,min_v,mean_v,max_v,mean_loss_pi,mean_loss_v = row
-            X.append(epoch)
+            X.append(int(epoch))
             returns.append(float(cum_r))
             min_reward.append(float(min_r))
             mean_reward.append(float(mean_r))
@@ -272,14 +273,14 @@ def plot_metrics(path,show=False):
     axes[0].plot(X,returns)
 
     axes[1].set_ylabel("Reward")
-    axes[1].plot(X,min_reward, c='red')
-    axes[1].plot(X,mean_reward)
-    axes[1].plot(X,max_reward, c='blue')
+    axes[1].plot(X,max_reward, c='blue',label='Max')
+    axes[1].plot(X,mean_reward, label='Mean')
+    axes[1].plot(X,min_reward, c='red', label='Min')
 
     axes[2].set_ylabel("Val")
-    axes[2].plot(X,min_val, c='red')
-    axes[2].plot(X,mean_val)
-    axes[2].plot(X,max_val, c='blue')
+    axes[2].plot(X,max_val, c='blue', label='Max')
+    axes[2].plot(X,mean_val, label='Mean')
+    axes[2].plot(X,min_val, c='red', label='Min')
 
     axes[3].set_ylabel("Loss V")
     axes[3].plot(X,losses_v)
@@ -294,3 +295,6 @@ def plot_metrics(path,show=False):
         plt.show()
     plt.savefig(path+'metrics_plot.png')
     plt.close()
+def save_rf(path,rf_str):
+    with open(path+'reward_function.txt','w') as f:
+        f.write(rf_str)

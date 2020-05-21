@@ -3,6 +3,8 @@ from reacher import ReacherEnv
 from ppo import CategoricalMLP, GaussianMLP
 import torch
 import argparse
+import os
+from utils import *
 
 
 if __name__ == '__main__':
@@ -10,34 +12,46 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='run trained agent from previous experiments')
 
-    parser.add_argument('--pusher', dest='env', action='store_const',
-                        const='pusher', default='reacher',
-                        help='run a pusher environment')
+    parser.add_argument('-d',dest='dir', default=None,
+                        help='specify a directory where the models and the hyperparams are savaed\n\
+                                example: -d ./results/pusher/experiment-example/')
+
+    parser.add_argument('--env', help='ENV = [pusher|reacher]')
 
     parser.add_argument('--suffix', default=None,
-                        help='specify a suffix corresponding to the experiment you want to run')
+                        help='specify a suffix corresponding to the experiment you want to run\n\
+                               the results will be saved in ./results/ENV/experiment-SUFFIX/')
+    parser.add_argument('-n', dest='episodes', default=10, type=int,
+                        help='number of episodes you want to run')
 
     args = parser.parse_args()
 
-    suffix = args.suffix
-    while(suffix is None):
-        print("You must provide the suffix of the experiment you want to run")
-        suffix = input("Enter a suffix...  ")
+    path = ""
+    if(args.dir is not None):
+        path = args.dir
+    elif(args.suffix is not None):
+        path = '.results/%s/experiment-%s/'%(args.env,suffix)
+    else:
+        print("Either the path (-d) or the suffix (--suffix) need to e specified")
+        raise
 
-    if(args.env!='pusher' and args.env!='reacher'):
-
-    env = PusherEnv(render=True)
 
     if(args.env == 'reacher'):
         env=ReacherEnv(render=True)
+    elif(args.env == 'pusher'):
+        env = PusherEnv(render=True)
+    else:
+        print("Environment should be either --reacher or --pusher")
+        raise
 
 
-    path = '.results/%s/experiment-%s/'%(args.env,suffix)
-    if not os.path.exists(filename):
-        print("No %s Experiment with suffix \"%s\" was found."%(args.env, suffix))
-        return
+
 
     filename = path + 'hyperparameters.csv'
+    if not os.path.exists(filename):
+        print("No experiment at %s"%(path))
+        raise
+
     h = load_hyperParameters(filename)
 
     state_dims = env.observation_space.shape
@@ -48,7 +62,8 @@ if __name__ == '__main__':
     model.load_state_dict(torch.load(h['path'] + 'policy.pt'))
     model.eval()
 
-    o = env.reset()
-    while(True):
-        action = model(torch.as_tensor(o, dtype=torch.float32)).sample()
-        o, reward, done, info = env.step(action)
+    for i in range(args.episodes):
+        o = env.reset()
+        for j in range(h['steps_per_epoch']):
+            action = model(torch.as_tensor(o, dtype=torch.float32)).sample()
+            o, reward, done, info = env.step(action)

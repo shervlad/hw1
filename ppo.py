@@ -30,7 +30,9 @@ def compute_advatages(states,rewards,vals,gamma,last_val):
 
 
 def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, epsilon = 0.2, 
-        pi_step=0.0001, v_step = 0.001, sgd_iterations=20, hidden_sizes=(64,64), plot_fn = None, path=None):
+        pi_step=0.0001, v_step = 0.001, sgd_iterations=20, hidden_sizes=(64,64), plot_fn = None, path=None, seed=0):
+
+    torch.random.manual_seed(seed)
     
     env = env_fn()
 

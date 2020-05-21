@@ -17,7 +17,8 @@ import pybullet as p
 logging.basicConfig(level=logging.INFO)
 
 class PusherEnv:
-	def __init__(self, action_repeat=10, render=False):
+	def __init__(self,  action_repeat=10, render=False, reward_fn=None):
+		self.reward_fn = reward_fn
 		self._action_repeat = action_repeat		
 		self.robot = Robot('ur5e_stick', pb=True, pb_cfg={'gui': render, 'realtime':False})
 		self.ee_ori = [-np.sqrt(2) / 2, np.sqrt(2) / 2, 0, 0]
@@ -84,7 +85,10 @@ class PusherEnv:
 	def compute_reward_push(self, state):
 		"""Fill in"""
 		# reward =  1/(np.linalg.norm(self.goal - state[3:])) - np.linalg.norm(state[:3] - state[3:])
-		
+
+		if(self.reward_fn is not None):
+			return self.reward_fn(state,self.goal)	
+
 		dist = (np.linalg.norm(self.goal - state[3:]))
 		dist2 = np.linalg.norm(state[3:] - state[:3])
 		# print("Dist: %s"%dist)

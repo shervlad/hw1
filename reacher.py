@@ -15,7 +15,8 @@ import pybullet as p
 
 
 class ReacherEnv:
-	def __init__(self, action_repeat=10, render=False):
+	def __init__(self, action_repeat=10, render=False, reward_fn=None):
+		self.reward_fn = reward_fn
 		self._action_repeat = action_repeat		
 		self.robot = Robot('ur5e_stick', pb=True, pb_cfg={'gui': render, 'realtime':False})
 		self.ee_ori = [-np.sqrt(2) / 2, np.sqrt(2) / 2, 0, 0]
@@ -71,7 +72,9 @@ class ReacherEnv:
 		return state, reward, done, info
 
 	def compute_reward_reach(self, state):
-		"""Fill in"""
+
+		if(self.reward_fn is not None):
+			return self.reward_fn(state)
 		dist = np.linalg.norm(state - self.goal)
 		# print("dist = %s"%dist)
 		return -dist
