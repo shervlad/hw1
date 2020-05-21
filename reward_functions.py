@@ -44,7 +44,7 @@ def rf6(state,goal):
     v2 = (state[:3] - state[3:])/dist2
 
     cosang = np.dot(v1, v2)
-    sinang = la.norm(np.cross(v1, v2))
+    sinang = np.linalg.norm(np.cross(v1, v2))
     ang = np.absolute(np.arctan2(sinang, cosang))
     # print("Dist: %s"%dist)
     reward = -dist**2 - dist2 -ang**3
@@ -52,9 +52,9 @@ def rf6(state,goal):
 
 def rf7(state,goal):
     dist = (np.linalg.norm(goal - state[3:]))
-    reward = -0.1;
+    reward = -0.1
     if(dist<0.075):
-        reward = 100;
+        reward = 100
     return reward
 
 def rf8(state,goal):
@@ -64,7 +64,7 @@ def rf8(state,goal):
     v2 = (state[:3] - state[3:])/dist2
 
     cosang = np.dot(v1, v2)
-    sinang = la.norm(np.cross(v1, v2))
+    sinang = np.linalg.norm(np.cross(v1, v2))
     ang = np.absolute(np.arctan2(sinang, cosang))
     # print("Dist: %s"%dist)
     reward = -dist - dist2 - ang
@@ -72,34 +72,34 @@ def rf8(state,goal):
 
 
 
-def rrf1(state):
+def rrf1(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = -dist
     return reward
 
-def rrf2(state):
+def rrf2(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = -dist**2
     return reward
 
-def rrf3(state):
+def rrf3(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = -0.1
     if(dist<0.075):
         reward = 100
     return reward
 
-def rrf4(state):
+def rrf4(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = 1/dist
     return reward
 
-def rrf5(state):
+def rrf5(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = 1/dist**2
     return reward
 
-def rrf6(state):
+def rrf6(state,goal):
     dist = (np.linalg.norm(goal - state))
     reward = -0.1
     if(dist < 0.2):

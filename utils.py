@@ -88,7 +88,7 @@ def plot_pusher_policy(env = None, epoch = 0, pi = None, v_net = None, path=None
     z_min, z_max = Z.min(), Z.max()
     c = ax.pcolormesh(X, Y, Z, cmap='RdBu', vmin=z_min, vmax=z_max)
 
-    q = ax.quiver(X, Y, U, V,C, units='xy')
+    q = ax.quiver(X, Y, U, V, color='black', units='xy')
     ax.set_aspect('equal')
 
 
@@ -110,9 +110,6 @@ def plot_pusher_policy(env = None, epoch = 0, pi = None, v_net = None, path=None
 
 def plot_reacher_policy(env = None, epoch = 0, pi = None, v_net = None, path=None):
 
-    if(timestr is None):
-        timestr = time.strftime("%Y%m%d-%H%M%S")
-
     print("******************************8Observation Space: ",env.observation_space.shape)
     bound = 1
     step = 0.1
@@ -127,7 +124,7 @@ def plot_reacher_policy(env = None, epoch = 0, pi = None, v_net = None, path=Non
         Z = Z.reshape(*Z.shape,1)
         coords = np.concatenate((X,Y,Z), axis=2).reshape((-1,3))
         o = torch.as_tensor(coords, dtype=torch.float32)
-        action = pi(o).mean.detach().numpy()/20
+        action = pi(o).mean.detach().numpy().reshape(-1,2)/20
         z = v_net(o).detach().numpy().reshape(shape)
         u = action[:,0].reshape(shape)
         v = action[:,1].reshape(shape)
@@ -152,7 +149,7 @@ def plot_reacher_policy(env = None, epoch = 0, pi = None, v_net = None, path=Non
     z_min, z_max = Z.min(), Z.max()
     c = ax.pcolormesh(X, Y, Z, cmap='RdBu', vmin=z_min, vmax=z_max)
 
-    q = ax.quiver(X, Y, U, V,C, units='xy')
+    q = ax.quiver(X, Y, U, V, color='black', units='xy')
     ax.set_aspect('equal')
 
 
@@ -295,6 +292,7 @@ def plot_metrics(path,show=False):
         plt.show()
     plt.savefig(path+'metrics_plot.png')
     plt.close()
+
 def save_rf(path,rf_str):
     with open(path+'reward_function.txt','w') as f:
         f.write(rf_str)
