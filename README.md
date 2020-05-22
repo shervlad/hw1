@@ -2,11 +2,21 @@ train.py, run.py, run_experiments.py all have Command Line Interfaces.
 
 To learn how to train:
 
->python train.py -h 
+```
+python train.py -h 
+```
+
+Example:
+```
+python train.py --env pusher --suffix test01 --hparams ./hyperparameters/hpprm1.csv 
+```
 
 To learn how to run a trained network:
 
->python run.py -h
+```
+python run.py -h
+```
+
 
 Examples how to run the policy you obtain from an experiment:
 ```
@@ -17,8 +27,14 @@ python run.py --env reacher -d ./results/reacher/experiment-exp2/
 To learn how to train based on a predefined experiments:
 ```
 python run_experiments.py -h
-
 ```
+Example:
+```
+python run_experiments.py --env pusher --experiments 1 2 3 4
+```
+
+The predefined experiments are in run_experiments.py
+
 
 Results are saved in /results/ENV/experiment-NAME/
 
