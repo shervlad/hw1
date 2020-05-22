@@ -6,5 +6,5 @@ epsilon,0.2
 pi_step,0.0001
 v_step,0.001
 sgd_iterations,40
-hidden_sizes,"(64, 64)"
+hidden_sizes,"(64, 64, 64)"
 seed,150

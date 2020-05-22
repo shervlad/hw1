@@ -1,1 +1,1 @@
-reward = -dist - dist2 - ang
+reward = -10*dist- 3*dist2 - ang/10
