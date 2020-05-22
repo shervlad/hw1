@@ -1,6 +1,8 @@
 airobot/
 reacher_results/
 pusher_results/
+#results/
+logs/
 # plots/
 .*
 
