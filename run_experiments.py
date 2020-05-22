@@ -222,7 +222,7 @@ pusher_experiments = [exp1, exp2, exp3, exp4, exp5, exp6,\
                       exp12, exp13, exp14, exp15, exp16]
 
 reacher_experiments = [Exp1, Exp2, Exp3, Exp4, Exp5, Exp6,\
-                      Exp7, Exp8, Exp8, Exp9, Exp10, Exp11, Exp12]
+                      Exp7, Exp8, Exp9, Exp10, Exp11, Exp12]
 
 experiments = {'pusher':pusher_experiments,'reacher':reacher_experiments}
 
