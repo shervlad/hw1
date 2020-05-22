@@ -41,7 +41,7 @@ def rf6(state,goal):
     dist2 = np.linalg.norm(state[3:] - state[:3])
 
     v1 = (goal - state[3:])/dist
-    v2 = (state[:3] - state[3:])/dist2
+    v2 = (state[3:] - state[:3])/dist2
 
     cosang = np.dot(v1, v2)
     sinang = np.linalg.norm(np.cross(v1, v2))
@@ -61,7 +61,7 @@ def rf8(state,goal):
     dist = (np.linalg.norm(goal - state[3:]))
     dist2 = np.linalg.norm(state[3:] - state[:3])
     v1 = (goal - state[3:])/dist
-    v2 = (state[:3] - state[3:])/dist2
+    v2 = (state[3:] - state[:3])/dist2
 
     cosang = np.dot(v1, v2)
     sinang = np.linalg.norm(np.cross(v1, v2))

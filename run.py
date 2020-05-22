@@ -59,7 +59,7 @@ if __name__ == '__main__':
     hidden_sizes = h['hidden_sizes']
 
     model = GaussianMLP(state_dims + hidden_sizes + act_dims)
-    model.load_state_dict(torch.load(h['path'] + 'policy.pt'))
+    model.load_state_dict(torch.load(path + 'policy.pt'))
     model.eval()
 
     for i in range(args.episodes):
