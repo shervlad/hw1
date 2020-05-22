@@ -1,0 +1,1 @@
+reward = -dist - dist2 - ang
