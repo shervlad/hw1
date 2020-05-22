@@ -87,7 +87,7 @@ exp11 = {
 exp12 = {
     'env'    : 'pusher',
     'suffix' : 'exp12',
-    'rf'     :  '5',
+    'rf'     :  '8',
     'hparams':  './hyperparameters/hpprm2.csv',
     'seed'   :  '120'
 }
