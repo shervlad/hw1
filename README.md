@@ -1,15 +1,24 @@
 train.py, run.py, run_experiments.py all have Command Line Interfaces.
 
 To learn how to train:
+
 >python train.py -h 
 
 To learn how to run a trained network:
 
 >python run.py -h
 
-To learn how to run predefined experiments:
+Examples how to run the policy you obtain from an experiment:
+```
+python run.py --env pusher -d ./results/pusher/experiment-exp1/
 
->python run_experiments.py -h
+python run.py --env reacher -d ./results/reacher/experiment-exp2/
+```
+To learn how to train based on a predefined experiments:
+```
+python run_experiments.py -h
+
+```
 
 Results are saved in /results/ENV/experiment-NAME/
 
