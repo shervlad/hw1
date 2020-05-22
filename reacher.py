@@ -74,7 +74,7 @@ class ReacherEnv:
 	def compute_reward_reach(self, state):
 
 		if(self.reward_fn is not None):
-			return self.reward_fn(state)
+			return self.reward_fn(state,self.goal)
 		dist = np.linalg.norm(state - self.goal)
 		# print("dist = %s"%dist)
 		return -dist
