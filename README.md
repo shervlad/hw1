@@ -21,7 +21,7 @@ Example:
 python run_experiments.py --env pusher --experiments 1 2 3 4
 ```
 
-The predefined experiments are in run_experiments.py
+The predefined experiments are in `run_experiments.py`
 
 # Results and running the trained policy
 
@@ -50,13 +50,13 @@ Every result folder contains:
 Cummulative Reward, Min Reward, Mean Reward, Max Reward, Min Val, Mean Val, Max Val, Mean Loss Pi, Mean Loss 
 
 
-**plots/** : plots of the policy are saved every 100th epoch. The arroes represent the action at that position. The color represents the value function.
+**plots/** - plots of the policy are saved every 100th epoch. The arrows represent the action at that position. The color represents the value function.
 For the pusher policy the position of the object is fixed.
 
 **policy.pt** - contains the saved parameters of the learned policy.
 
 **valye_fn.pt** - contains the saved parameters of the learned value function
 
-**metrics_plot**   plot of the metrics saved in metrics.csv
+**metrics_plot.png** - plot of the metrics saved in metrics.csv
 
-**reward_function.txt** - the reward functino used for this experiment
+**reward_function.txt** - the reward functin used for this experiment
