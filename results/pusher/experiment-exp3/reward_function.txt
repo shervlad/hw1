@@ -1,0 +1,1 @@
+reward = 1/dist  + 1/dist2
