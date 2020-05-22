@@ -1,10 +1,10 @@
-num_epochs,1000
-steps_per_epoch,3000
-gamma,0.99
-lam,0.95
-epsilon,0.25
-pi_step,0.0005
-v_step,0.005
-sgd_iterations,33
-hidden_sizes,"(64, 64, 64, 64, 64)"
-seed,0
+num_epochs,1000
+steps_per_epoch,3000
+gamma,0.99
+lam,0.95
+epsilon,0.25
+pi_step,0.0005
+v_step,0.005
+sgd_iterations,33
+hidden_sizes,"(64, 64, 64, 64, 64)"
+seed,0
