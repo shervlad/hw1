@@ -179,7 +179,7 @@ def create_paths(env_name,suffix):
 def load_hyperParameters(filename):
     h={}
     if filename.endswith('.pickle'):
-        f = open(filename,"wb")
+        f = open(filename,"rb")
         h = pickle.load(f)
         f.close()
     elif(filename.endswith('.csv')):
