@@ -1,0 +1,1 @@
+reward = -20*dist - dist2 - ang/20
