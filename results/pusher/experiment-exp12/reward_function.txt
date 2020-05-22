@@ -1,1 +1,0 @@
-reward = -dist**2 - dist2 - ang**3
