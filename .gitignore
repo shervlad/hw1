@@ -1,0 +1,7 @@
+airobot/
+reacher_results/
+pusher_results/
+# plots/
+.*
+
+__pycache__/

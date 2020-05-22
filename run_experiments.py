@@ -87,7 +87,7 @@ exp11 = {
 exp12 = {
     'env'    : 'pusher',
     'suffix' : 'exp12',
-    'rf'     :  '5',
+    'rf'     :  '8',
     'hparams':  './hyperparameters/hpprm2.csv',
     'seed'   :  '120'
 }
@@ -218,11 +218,11 @@ Exp12 = {
 
 
 pusher_experiments = [exp1, exp2, exp3, exp4, exp5, exp6,\
-                      exp7, exp8, exp8, exp9, exp10, exp11,\
-                      exp12, exp13, exp14, exp15, exp16, exp13 ]
+                      exp7, exp8, exp9, exp10, exp11,\
+                      exp12, exp13, exp14, exp15, exp16]
 
 reacher_experiments = [Exp1, Exp2, Exp3, Exp4, Exp5, Exp6,\
-                      Exp7, Exp8, Exp8, Exp9, Exp10, Exp11, Exp12]
+                      Exp7, Exp8, Exp9, Exp10, Exp11, Exp12]
 
 experiments = {'pusher':pusher_experiments,'reacher':reacher_experiments}
 
@@ -239,13 +239,13 @@ if __name__ == '__main__':
         raise
 
     for i in args.experiments:
-        if i>=len(experiments[args.env]):
+        if i>len(experiments[args.env]) or i==0:
             print("experiment index %s is out of range\
-                    indices must be in range [%s,%s]"%(i,0,len(experiments[args.env])))
+                    indices must be in range [%s,%s]"%(i,1,len(experiments[args.env])))
             raise
     
     for i in args.experiments:
-        exp = experiments[args.env][i]
+        exp = experiments[args.env][i-1]
         with open('./logs/log-exp%s.txt'%i, 'w') as f:
             process = subprocess.Popen(['python', 
                                         'train.py', 
@@ -262,9 +262,9 @@ if __name__ == '__main__':
                                         stdout=f)
 
 
-    while True:
-        output = process.stdout.readline()
-        if(output == '' and process.poll() is not None):
-            break
-        if output:
-            print(output.strip())
+    # while True:
+    #     output = process.stdout.readline()
+    #     if(output == '' and process.poll() is not None):
+    #         break
+    #     if output:
+    #         print(output.strip())
