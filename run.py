@@ -65,5 +65,5 @@ if __name__ == '__main__':
     for i in range(args.episodes):
         o = env.reset()
         for j in range(h['steps_per_epoch']):
-            action = model(torch.as_tensor(o, dtype=torch.float32)).sample()
+            action = model(torch.as_tensor(o, dtype=torch.float32)).mean.detach()
             o, reward, done, info = env.step(action)

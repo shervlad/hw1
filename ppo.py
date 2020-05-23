@@ -57,8 +57,9 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
         log_probs = np.zeros(steps_per_epoch, dtype=np.float32)
 
         for s in range(steps_per_epoch):
+            # print("Setp %s"%s)
             pi = pi_network(torch.as_tensor(state, dtype=torch.float32))
-            action = pi.sample()
+            action = pi.mean.detach()
             logp =  pi.log_prob(action).sum(axis=-1)
 
             new_state, reward, done, info = env.step(action)
@@ -82,7 +83,7 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
         log_probs  = torch.as_tensor(log_probs, dtype=torch.float32)
 
         #compute advantages
-        adv        = torch.as_tensor(compute_advatages(states,rewards,vals, gamma*lam, last_val), dtype=torch.float32)
+        adv        = torch.as_tensor(compute_advatages(states,rewards,vals, gamma, last_val), dtype=torch.float32)
         returns    = torch.as_tensor(discount(rewards,gamma,last_val), dtype=torch.float32)
 
 

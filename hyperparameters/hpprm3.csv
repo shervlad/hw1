@@ -1,0 +1,9 @@
+num_epochs,10000
+steps_per_epoch,200
+gamma,0.98
+lam,0.95
+epsilon,0.18
+pi_step,0.0002
+v_step,0.001
+sgd_iterations,50
+hidden_sizes,"(64, 64, 64, 64)"

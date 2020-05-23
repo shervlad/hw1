@@ -1,0 +1,1 @@
+reward = 100 - 10*(3*dist + dist2 + ang/5)
