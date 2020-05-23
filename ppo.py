@@ -96,7 +96,7 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
             pi = pi_network(states)
             new_log_probs = pi.log_prob(actions).sum(axis=-1)
             ratio = torch.exp(new_log_probs - log_probs)
-            l_cpi = torch.clamp(ratio,1-epsilon,1+epsilon)*adv
+            l_cpi = torch.min(torch.clamp(ratio,1-epsilon,1+epsilon)*adv, ratio*adv)
             loss_pi = -1*(torch.min(ratio*adv, l_cpi)).mean()
             pi_losses.append(loss_pi.item())
             loss_pi.backward()
