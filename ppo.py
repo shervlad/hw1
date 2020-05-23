@@ -17,15 +17,18 @@ def discount(arr, gamma, last_val = 0):
     return discounted[:-1]
 
 def compute_advatages(states,rewards,vals,gamma,last_val):
+    
     T = len(states)
     deltas = [0]*T
     for i in range(T):
-        nextval = last_val
+        nextval = last_val.item()
         if(i != T-1):
             nextval = vals[i+1]
         deltas[i] = rewards[i] + gamma*nextval - vals[i]
 
-    a = discount(deltas,gamma,last_val)
+    a = torch.FloatTensor(discount(deltas,gamma*0.95,last_val))
+    mean, std = torch.mean(a), torch.std(a)
+    a = (a - mean)/std
     return a
 
 
@@ -59,7 +62,7 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
         for s in range(steps_per_epoch):
             # print("Setp %s"%s)
             pi = pi_network(torch.as_tensor(state, dtype=torch.float32))
-            action = pi.mean.detach()
+            action = pi.sample()
             logp =  pi.log_prob(action).sum(axis=-1)
 
             new_state, reward, done, info = env.step(action)
@@ -96,7 +99,7 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
             pi = pi_network(states)
             new_log_probs = pi.log_prob(actions).sum(axis=-1)
             ratio = torch.exp(new_log_probs - log_probs)
-            l_cpi = torch.min(torch.clamp(ratio,1-epsilon,1+epsilon)*adv, ratio*adv)
+            l_cpi = torch.clamp(ratio,1-epsilon,1+epsilon)*adv
             loss_pi = -1*(torch.min(ratio*adv, l_cpi)).mean()
             pi_losses.append(loss_pi.item())
             loss_pi.backward()

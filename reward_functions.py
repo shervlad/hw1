@@ -46,16 +46,25 @@ def rf6(state,goal):
     sinang = np.linalg.norm(np.cross(v1, v2))
     ang = np.absolute(np.arctan2(sinang, cosang))
     # print("Dist: %s"%dist)
-    reward = 100 - 50*(3*dist + dist2 + ang/5)
+    reward = 100 - 50*(3*dist + dist2 + ang/15)
     # print("%.2f  --- RF6: 100 - 50*(3*dist + dist2 + ang/5),  Dist1: %.2f  Dist2: %.2f  Angle: %.2f"%(reward,dist,dist2,ang))
     # print("%.2f  --- RF6: 100 - 50*(%.2f + %.2f + %.2f)"%(reward,3*dist,dist2,ang/5))
     return reward
 
 def rf7(state,goal):
     dist = (np.linalg.norm(goal - state[3:]))
-    reward = -0.1
-    if(dist<0.075):
-        reward = 100
+    dist2 = np.linalg.norm(state[3:] - state[:3])
+
+    v1 = (goal - state[3:])/dist
+    v2 = (state[3:] - state[:3])/dist2
+
+    cosang = np.dot(v1, v2)
+    sinang = np.linalg.norm(np.cross(v1, v2))
+    ang = np.absolute(np.arctan2(sinang, cosang))
+    reward = 100 - 50*(3*dist + dist2)
+    # print("Dist: %s"%dist))
+    # print("%.2f  --- RF6: 100 - 50*(3*dist + dist2 + ang/5),  Dist1: %.2f  Dist2: %.2f  Angle: %.2f"%(reward,dist,dist2,ang))
+    # print("%.2f  --- RF6: 100 - 50*(%.2f + %.2f + %.2f)"%(reward,3*dist,dist2,ang/5))
     return reward
 
 def rf8(state,goal):
@@ -126,7 +135,8 @@ pusher_rfs_str = [ "reward = -dist - dist2",
                    "reward = 1/(dist  + dist2)",
                    "reward = 1/(dist  + dist2)**2",
                    "reward = -dist**2 - dist2",
-                   "reward = 100 - 10*(3*dist + dist2 + ang/5)",
+                   "reward = 100 - 50*(3*dist + dist2 + ang/5)",
+                   "reward = 100 - 50*(3*dist + dist2)",
                    "reward = (dist<0.075)?100 : -0.1",
                    "reward = -dist - dist2 - ang",
                    "reward = -dist**3 - dist2**2 - ang/10"]

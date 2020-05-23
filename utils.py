@@ -21,13 +21,14 @@ class GaussianMLP(torch.nn.Module):
             act = activation if j < len(dimensions)-2 else output_activation
             layers += [nn.Linear(dimensions[j], dimensions[j+1]), act()]
 
-        self.log_std = nn.Parameter(torch.as_tensor(-0.5*np.ones(dimensions[-1],dtype=np.float32)))
+        # self.log_std = nn.Parameter(torch.as_tensor(-0.5*np.ones(dimensions[-1],dtype=np.float32)))
+        self.std = nn.Parameter(2*torch.as_tensor(np.ones(dimensions[-1],dtype=np.float32)))
         self.perceptron =  nn.Sequential(*layers)
 
     def forward(self, state):
         pi = self.perceptron(state)
-        st_dev = torch.exp(self.log_std)
-        return Normal(pi,st_dev)
+        # st_dev = torch.exp(self.log_std)
+        return Normal(pi,self.std)
 
 class CategoricalMLP(torch.nn.Module):
     def __init__(self,dimensions,activation = nn.Tanh, output_activation=nn.Identity):
