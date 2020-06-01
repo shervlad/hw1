@@ -6,6 +6,7 @@ from torch.distributions.normal import Normal
 import csv
 import time
 from utils import *
+import torch.nn.functional as F
 
 def discount(arr, gamma, last_val = 0):
     T = len(arr)
@@ -42,8 +43,9 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
     state_dims = env.observation_space.shape
     act_dims = env.action_space.shape
 
+    v_hidden_sizes = (32,32,32)
     pi_network = GaussianMLP(state_dims + hidden_sizes + act_dims)
-    v_network = CategoricalMLP(state_dims + hidden_sizes + (1,))
+    v_network = CategoricalMLP(state_dims + v_hidden_sizes + (1,))
 
     pi_optimizer = Adam(pi_network.parameters(), lr = pi_step)
     v_optimizer = Adam(v_network.parameters(), lr = v_step)
@@ -62,7 +64,7 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
         for s in range(steps_per_epoch):
             # print("Setp %s"%s)
             pi = pi_network(torch.as_tensor(state, dtype=torch.float32))
-            action = pi.sample()
+            action = torch.as_tensor(np.nan_to_num(pi.sample().detach().numpy()),dtype=torch.float32)
             logp =  pi.log_prob(action).sum(axis=-1)
 
             new_state, reward, done, info = env.step(action)
@@ -92,12 +94,18 @@ def ppo(env_fn, num_epochs=10000, steps_per_epoch=400, gamma=0.98, lam = 0.95, e
 
         pi_losses = []
         v_losses  = []
+        old_pi = pi_network(states)
         for i in range(sgd_iterations):
 
             #calculate loss pi
             pi_optimizer.zero_grad()
             pi = pi_network(states)
+            kl = torch.distributions.kl.kl_divergence(old_pi, pi).mean()
+            if(kl>0.015):
+                print("big kl")
+                break
             new_log_probs = pi.log_prob(actions).sum(axis=-1)
+            
             ratio = torch.exp(new_log_probs - log_probs)
             l_cpi = torch.clamp(ratio,1-epsilon,1+epsilon)*adv
             loss_pi = -1*(torch.min(ratio*adv, l_cpi)).mean()

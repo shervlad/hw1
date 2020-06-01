@@ -74,20 +74,12 @@ def plot_pusher_policy(env = None, epoch = 0, pi = None, v_net = None, path=None
 
     U,V,Z = func(X,Y,Z)
 
-    d = 1
-    C  = d*np.ones(X.shape)
-
     norm = mpl.colors.Normalize()
-    norm.autoscale(C)
-    cmap = cm.get_cmap('Greys')
+    norm.autoscale(Z)
 
-    m = cm.ScalarMappable(norm=norm, cmap=cmap)
-    m.set_array(C)
-    C = m.to_rgba(x = C,norm=True) 
     fig, ax = plt.subplots()
 
-    z_min, z_max = Z.min(), Z.max()
-    c = ax.pcolormesh(X, Y, Z, cmap='RdBu', vmin=z_min, vmax=z_max)
+    c = ax.pcolormesh(X, Y, Z, cmap='RdBu', norm = norm)
 
     q = ax.quiver(X, Y, U, V, color='black', units='xy')
     ax.set_aspect('equal')

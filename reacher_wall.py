@@ -15,7 +15,8 @@ import pybullet as p
 
 
 class ReacherWallEnv:
-	def __init__(self, action_repeat=10, render=False):
+	def __init__(self, action_repeat=10, render=False, reward_fn = None):
+		self.reward_fn = reward_fn
 		self._action_repeat = action_repeat		
 		self.robot = Robot('ur5e_stick', pb=True, pb_cfg={'gui': render, 'realtime':False})
 		self.ee_ori = [-np.sqrt(2) / 2, np.sqrt(2) / 2, 0, 0]
@@ -75,6 +76,9 @@ class ReacherWallEnv:
 
 	def compute_reward_reach_wall(self, state):
 		"""Fill in"""
+		if(self.reward_fn is not None):
+			return self.reward_fn(state, self.goal)
+		return np.linalg.norm((self.goal - state))
 		raise NotImplementedError
 
 	def _get_obs(self):

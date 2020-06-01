@@ -4,6 +4,7 @@ import time
 from ppo import ppo
 from pusher import PusherEnv
 from reacher import ReacherEnv
+from reacher_wall import ReacherWallEnv
 import shutil
 from reward_functions import reward_functions
 
@@ -12,7 +13,7 @@ def main():
     defaultTimestr = time.strftime("%Y%m%d-%H%M%S")
     parser = argparse.ArgumentParser(description='train reacher and pusher using PPO')
     parser.add_argument('--env',
-                        help='[pusher|reacher] - the environment you want to train')
+                        help='[pusher|reacher|reacher_wall] - the environment you want to train')
 
     parser.add_argument('--hparams',dest='hparams',
                         help='(.csv or .pickle) specify the file that stores the hyperparameters you want to use for the trainig session ')
@@ -35,8 +36,8 @@ def main():
                         help='Seed for initializing random parameters')
     args = parser.parse_args()
 
-    if(args.env!='pusher' and args.env!='reacher'):
-        print('%s is not a valid environment. Has to be \"pusher\" or \"reacher\"' %args.env)
+    if(args.env!='pusher' and args.env!='reacher' and args.env!='reacher_wall'):
+        print('%s is not a valid environment. Has to be "pusher" or "reacher" or "reacher_wall"' %args.env)
     
     if(args.show_rfs):
         for i,rfstr in enumerate(reward_functions[args.env]['str']):
@@ -91,6 +92,7 @@ def main():
     save_hyperParameters(h,path)
     h['path'] = path
     save_rf(path,rf_str)
+
     if(args.env == 'pusher'):
 
         h['env_fn'] = lambda : PusherEnv(render=args.render,reward_fn=rf)
@@ -100,6 +102,11 @@ def main():
 
         h['env_fn'] = lambda : ReacherEnv(render=args.render,reward_fn=rf)
         h['plot_fn']   =  plot_reacher_policy
+    elif(args.env == 'reacher_wall'):
+
+        h['env_fn'] = lambda : ReacherWallEnv(render=args.render,reward_fn=rf)
+        h['plot_fn']   =  plot_reacher_policy
+
 
     ppo(**h)
 
