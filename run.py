@@ -1,5 +1,6 @@
 from pusher import PusherEnv
 from reacher import ReacherEnv
+from reacher_wall import ReacherWallEnv
 from ppo import CategoricalMLP, GaussianMLP
 import torch
 import argparse
@@ -40,6 +41,8 @@ if __name__ == '__main__':
         env=ReacherEnv(render=True)
     elif(args.env == 'pusher'):
         env = PusherEnv(render=True)
+    elif(args.env == 'reacher_wall'):
+        env = ReacherWallEnv(render=True)
     else:
         print("Environment should be either --reacher or --pusher")
         raise
